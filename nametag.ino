@@ -2,6 +2,7 @@
 // Date Created: 5/20/18
 
 // Portions of code taken from minimatrix16x8 example sketch
+// https://github.com/adafruit/Adafruit_LED_Backpack/blob/master/examples/minimatrix16x8/minimatrix16x8.ino
 // Alien animations courtesy of Adafruit
 // https://learn.adafruit.com/trinket-slash-gemma-space-invader-pendant/source-code
 
