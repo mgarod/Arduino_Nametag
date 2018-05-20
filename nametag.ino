@@ -21,111 +21,212 @@ void setup() {
   matrix.setBrightness(8); // max 15
  }
 
+static const uint8_t PROGMEM alien_bmps[][2][8] = {
+  { // Alien 1
+    { // Frame 1
+      B00100100,
+      B00100100,
+      B01111110,
+      B11011011,
+      B11111111,
+      B11111111,
+      B10100101,
+      B00100100
+    },
+    { // Frame 2
+      B00100100,
+      B10100101,
+      B11111111,
+      B11011011,
+      B11111111,
+      B01111110,
+      B00100100,
+      B01000010
+    }
+  },
+  { // Alien 2
+    { // Frame 1
+      B00000000,
+      B00111100,
+      B01111110,
+      B11011011,
+      B11011011,
+      B01111110,
+      B00100100,
+      B11000011
+    },
+    { // Frame 2
+      B00111100,
+      B01111110,
+      B11011011,
+      B11011011,
+      B01111110,
+      B00100100,
+      B00100100,
+      B00100100,
+    }
+  },
+  { // Alien 3
+    { // Frame 1
+      B00011000,
+      B00111100,
+      B01111110,
+      B11011011,
+      B11111111,
+      B00100100,
+      B01011010,
+      B01000010,
+    },
+    { // Frame 2
+      B00011000,
+      B00111100,
+      B01111110,
+      B11011011,
+      B11111111,
+      B00100100,
+      B01011010,
+    }
+  }
+};
+  
 static const uint8_t PROGMEM
-  alien11_bmp[] = { // Alien #1, Frame #1
-    B00100100,
-    B00100100,
-    B01111110,
-    B11011011,
-    B11111111,
-    B11111111,
-    B10100101,
-    B00100100
+  ghost_bmp[][8] = {
+    {
+      B01111110,
+      B11111111,
+      B10011001,
+      B11011101,
+      B10011001,
+      B11111111,
+      B10111011,
+      B00110011
+    },
+    {
+      B01111110,
+      B11111111,
+      B10011001,
+      B11011101,
+      B10011001,
+      B11111111,
+      B11011101,
+      B10011001
+    },
+    {
+      B01111110,
+      B11111111,
+      B10011001,
+      B11011101,
+      B10011001,
+      B11111111,
+      B11101110,
+      B11001100
+    },
+    {
+      B01111110,
+      B11111111,
+      B10011001,
+      B11011101,
+      B10011001,
+      B11111111,
+      B11011101,
+      B10011001
+    }
   },
-  alien12_bmp[] = { // Alien #1, Frame #2
-    B00100100,
-    B10100101,
-    B11111111,
-    B11011011,
-    B11111111,
-    B01111110,
-    B00100100,
-    B01000010
+  pacman_bmp[][8] = {
+  {
+    B01111100,
+    B00111110,
+    B00011111,
+    B00001111,
+    B00001111,
+    B00011111,
+    B00111110,
+    B01111100
   },
-  alien21_bmp[] = { // Alien #2, Frame #1
-    B00000000,
-    B00111100,
-    B01111110,
-    B11011011,
-    B11011011,
-    B01111110,
-    B00100100,
-    B11000011
+  {
+    B01111100,
+    B11111110,
+    B01111111,
+    B00011111,
+    B00011111,
+    B01111111,
+    B11111110,
+    B01111100
   },
-  alien22_bmp[] = { // Alien #2, Frame #2
-    B00111100,
-    B01111110,
-    B11011011,
-    B11011011,
-    B01111110,
-    B00100100,
-    B00100100,
-    B00100100,
-  },
-  alien31_bmp[] = { // Alien #3, Frame #1
-    B00011000,
-    B00111100,
-    B01111110,
-    B11011011,
+  {
+    B01111100,
+    B11111110,
     B11111111,
-    B00100100,
-    B01011010,
-    B01000010,
-  },
-  alien32_bmp[] = { // Alien #3, Frame #2
-    B00011000,
-    B00111100,
-    B01111110,
-    B11011011,
     B11111111,
-    B00100100,
-    B01011010,
-  };
+    B11111111,
+    B11111111,
+    B11111110,
+    B01111100
+  },
+  {
+    B01111100,
+    B11111110,
+    B01111111,
+    B00011111,
+    B00011111,
+    B01111111,
+    B11111110,
+    B01111100
+  }
+};
 
-void drawSpaceInvadersLeft() {
+// Ghost being chased by Pacman, both moving to the left
+// Time: 46 outer loop x 4 frames x 40ms delay = 7.52 seconds
+void drawPacmanAttack() {
+  matrix.setRotation(1);
   for (int8_t x=16; x>=-30; x--) {
     matrix.setCursor(x,0);
-    if (x % 2) {
+    for (int8_t frame=0; frame<4; frame++) {
       matrix.clear();
-      matrix.setRotation(1);
-      matrix.drawBitmap(x, 0, alien11_bmp, 8, 8, LED_ON);
-      matrix.drawBitmap(x+10, 0, alien21_bmp, 8, 8, LED_ON);
-      matrix.drawBitmap(x+20, 0, alien31_bmp, 8, 8, LED_ON);
+      matrix.drawBitmap(x,    0,  ghost_bmp[frame], 8, 8, LED_ON); // Ghost on the left
+      matrix.drawBitmap(x+10, 0, pacman_bmp[frame], 8, 8, LED_ON); // 10 spaces to the right
       matrix.writeDisplay();
-      delay(150);
-    } else {
-      matrix.clear();
-      matrix.drawBitmap(x, 0, alien12_bmp, 8, 8, LED_ON);
-      matrix.drawBitmap(x+10, 0, alien22_bmp, 8, 8, LED_ON);
-      matrix.drawBitmap(x+20, 0, alien32_bmp, 8, 8, LED_ON);
-      matrix.writeDisplay();
-      delay(150);
+      delay(40);
     }
   }
 }
 
+// Space invaders move to the left
+// Time: 47 loops x 150ms = 7.05 seconds
+void drawSpaceInvadersLeft() {
+  matrix.setRotation(1);
+  int8_t frameCounter = 0;
+  for (int8_t x=16; x>=-30; x--) {
+    matrix.setCursor(x,0);
+    matrix.clear();
+    matrix.drawBitmap(x,    0, alien_bmps[0][frameCounter], 8, 8, LED_ON);
+    matrix.drawBitmap(x+10, 0, alien_bmps[1][frameCounter], 8, 8, LED_ON);
+    matrix.drawBitmap(x+20, 0, alien_bmps[2][frameCounter], 8, 8, LED_ON);
+    matrix.writeDisplay();
+    frameCounter = (frameCounter + 1) % 2;
+    delay(150);
+  }
+}
+
+// Space invaders move to the right
+// Time: 47 loops x 150ms = 7.05 seconds
 void drawSpaceInvadersRight() {
+  matrix.setRotation(1);
+  int8_t frameCounter = 0;
   for (int8_t x=-8; x<=38; x++) {
     matrix.setCursor(x,0);
-    if (x % 2) {
-      matrix.clear();
-      matrix.setRotation(1);
-      matrix.drawBitmap(x, 0, alien11_bmp, 8, 8, LED_ON);
-      matrix.drawBitmap(x-10, 0, alien21_bmp, 8, 8, LED_ON);
-      matrix.drawBitmap(x-20, 0, alien31_bmp, 8, 8, LED_ON);
-      matrix.writeDisplay();
-      delay(150);
-    } else {
-      matrix.clear();
-      matrix.drawBitmap(x, 0, alien12_bmp, 8, 8, LED_ON);
-      matrix.drawBitmap(x-10, 0, alien22_bmp, 8, 8, LED_ON);
-      matrix.drawBitmap(x-20, 0, alien32_bmp, 8, 8, LED_ON);
-      matrix.writeDisplay();
-      delay(150);
-    }
+    matrix.clear();
+    matrix.drawBitmap(x,    0, alien_bmps[0][frameCounter], 8, 8, LED_ON);
+    matrix.drawBitmap(x-10, 0, alien_bmps[1][frameCounter], 8, 8, LED_ON);
+    matrix.drawBitmap(x-20, 0, alien_bmps[2][frameCounter], 8, 8, LED_ON);
+    matrix.writeDisplay();
+    frameCounter = (frameCounter + 1) % 2;
+    delay(150);
   }
 }
 
+// Streams of lines of varying length fall from top of the matrix.
+// Time: 36 loops x 1ms = 2.34 seconds
 void drawRain() {
   randomSeed(analogRead(0));
   int8_t rand_start[16], rand_len[16];
@@ -142,10 +243,12 @@ void drawRain() {
                       line, rand_start[line] + y + rand_len[line], LED_ON);
     }
     matrix.writeDisplay();
-    delay(100);
+    delay(65);
   }
 }
 
+// Write text to the screen. Letters move from the right side to the left.
+// Time: 49 loops x 100ms = 4.9 Seconds
 void drawScrollingText(char* name) {
   matrix.setTextSize(1);
   matrix.setTextWrap(false);  // we dont want text to wrap so it scrolls nicely
@@ -161,10 +264,17 @@ void drawScrollingText(char* name) {
 }
 
 void loop() {
+  // Approx. Total Time to cycle: ~50 Seconds
   drawSpaceInvadersRight();
   drawRain();
   drawScrollingText("Mike");
+  drawRain();
+  drawPacmanAttack();
+  drawRain();
+  drawScrollingText("Mike");
+  drawRain();
   drawSpaceInvadersLeft();
   drawRain();
   drawScrollingText("Mike");
+  drawRain();
 }
