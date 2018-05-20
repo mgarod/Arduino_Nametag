@@ -166,4 +166,5 @@ void loop() {
   drawScrollingText("Mike");
   drawSpaceInvadersLeft();
   drawRain();
+  drawScrollingText("Mike");
 }
